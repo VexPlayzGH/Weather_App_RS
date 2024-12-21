@@ -113,7 +113,7 @@ fn display_weather_info(response: &WeatherResponse) {
         "clear sky" => weather_text.bright_yellow(),
         "few clouds" | "scattered clouds" | "broken clouds" => weather_text.bright_blue(),
         "overcast clouds" | "mist" | "haze" | "smoke" | "sand" | "dust" | "fog" | "squalls" => weather_text.dimmed(),
-        "shower rain" | "rain" | "light rain" | "thunderstorm" | "snow" => weather_text.bright_cyan(),
+        "shower rain" | "rain" | "light rain" | "moderate rain" | "thunderstorm" | "snow" | "light snow" => weather_text.bright_cyan(),
         _ => weather_text.normal(),
     };
 
