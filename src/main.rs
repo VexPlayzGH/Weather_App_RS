@@ -132,7 +132,6 @@ fn get_weather_forecast_info(city: &str, country_code: &str, api_key: &str) -> R
 
     // Sending a blocking GET request to the API endpoint    
     let response_fc_list = reqwest::blocking::get(&url_fc)?;
-    println!("{:?}", response_fc_list);
     // Parsing the JSON response into WeatherResponse struct
     let response_fc_json = response_fc_list.json::<List>()?;
     // Returning the deserialized response
