@@ -101,7 +101,7 @@ fn display_weather_info(response: &WeatherResponse) {
         > Wind Speed: {:.1} mps",
         response.name,
         description,
-        get_temperature_emoji(temperature),
+        get_temperature_emoji(temperature, description),
         temperature,
         humidity,
         pressure,
@@ -113,7 +113,7 @@ fn display_weather_info(response: &WeatherResponse) {
         "clear sky" => weather_text.bright_yellow(),
         "few clouds" | "scattered clouds" | "broken clouds" => weather_text.bright_blue(),
         "overcast clouds" | "mist" | "haze" | "smoke" | "sand" | "dust" | "fog" | "squalls" => weather_text.dimmed(),
-        "shower rain" | "rain" | "thunderstorm" | "snow" => weather_text.bright_cyan(),
+        "shower rain" | "rain" | "light rain" | "thunderstorm" | "snow" => weather_text.bright_cyan(),
         _ => weather_text.normal(),
     };
 
@@ -129,7 +129,7 @@ fn get_weather_forecast_info(city: &str, country_code: &str, api_key: &str) -> R
     );
 
     // Sending a blocking GET request to the API endpoint    
-    let response_fc_list = reqwest::blocking::get(&url_fc)?;
+    let response_fc_list = reqwest::blocking::get(&url_fc)?;    
     // Parsing the JSON response into WeatherResponse struct
     let response_fc_json = response_fc_list.json::<List>()?;
     // Returning the deserialized response
@@ -157,7 +157,7 @@ fn display_weather_forecast_info(list: &List) {
             dt_text,
             name,
             description_fc,
-            get_temperature_emoji(temperature_fc),
+            get_temperature_emoji(temperature_fc, description_fc),
             temperature_fc,
             humidity_fc,
             pressure_fc,
@@ -169,7 +169,7 @@ fn display_weather_forecast_info(list: &List) {
             "clear sky" => weather_text_fc.bright_yellow(),
             "few clouds" | "scattered clouds" | "broken clouds" => weather_text_fc.bright_blue(),
             "overcast clouds" | "mist" | "haze" | "smoke" | "sand" | "dust" | "fog" | "squalls" => weather_text_fc.dimmed(),
-            "shower rain" | "rain" | "thunderstorm" | "snow" => weather_text_fc.bright_cyan(),
+            "shower rain" | "rain" | "light rain" | "thunderstorm" | "snow" => weather_text_fc.bright_cyan(),
             _ => weather_text_fc.normal(),
         };
 
@@ -180,19 +180,27 @@ fn display_weather_forecast_info(list: &List) {
 }
 
 // Function to get emoji based on temperature
-fn get_temperature_emoji(temperature: f64) -> &'static str {
-    if temperature < 0.0 {
-        "❄️"
-    } else if temperature < 10.0 {
-        "☁️"
-    } else if temperature < 20.0 {
-        "⛅"
-    } else if temperature < 30.0 {
-        "🌤️"
-    } else if temperature < 37.0 {
-        "☀️"
-    } else {
-        "🔥"
+fn get_temperature_emoji(temperature: f64, description_fc: &String) -> &'static str {
+    if description_fc.as_str() == "shower rain" || description_fc.as_str() == "rain" || description_fc.as_str() == "light rain"{
+        "🌧️"
+    }
+    else if description_fc.as_str() == "thunderstorm" {
+        "⛈️"
+    }
+    else {
+        if temperature < 0.0 {
+            "❄️"
+        } else if temperature < 10.0 {
+            "☁️"
+        } else if temperature < 20.0 {
+            "⛅"
+        } else if temperature < 30.0 {
+            "🌤️"
+        } else if temperature < 37.0 {
+            "☀️"
+        } else {
+            "🔥"
+        }    
     }    
 }
 
