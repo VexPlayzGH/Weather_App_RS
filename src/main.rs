@@ -169,7 +169,7 @@ fn display_weather_forecast_info(list: &List) {
             "clear sky" => weather_text_fc.bright_yellow(),
             "few clouds" | "scattered clouds" | "broken clouds" => weather_text_fc.bright_blue(),
             "overcast clouds" | "mist" | "haze" | "smoke" | "sand" | "dust" | "fog" | "squalls" => weather_text_fc.dimmed(),
-            "shower rain" | "rain" | "light rain" | "thunderstorm" | "snow" => weather_text_fc.bright_cyan(),
+            "shower rain" | "rain" | "light rain" | "moderate rain" | "thunderstorm" | "snow" | "light snow" => weather_text_fc.bright_cyan(),
             _ => weather_text_fc.normal(),
         };
 
@@ -181,13 +181,13 @@ fn display_weather_forecast_info(list: &List) {
 
 // Function to get emoji based on temperature
 fn get_temperature_emoji(temperature: f64, description_fc: &String) -> &'static str {
-    if description_fc.as_str() == "shower rain" || description_fc.as_str() == "rain" || description_fc.as_str() == "light rain"{
+    if description_fc.as_str() == "shower rain" || description_fc.as_str() == "rain" || description_fc.as_str() == "light rain" || description_fc.as_str() == "moderate rain"{
         "🌧️"
     }
     else if description_fc.as_str() == "thunderstorm" {
         "⛈️"
     }
-    else if description_fc.as_str() == "snow" {
+    else if description_fc.as_str() == "snow" || description_fc.as_str() == "light snow" {
         "❄️"
     }
     else {
