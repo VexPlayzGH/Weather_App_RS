@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use serde::Deserialize; // For JSON serialization
 use colored::*; // Importing colored crate for text coloring
 use std::process::Command;
