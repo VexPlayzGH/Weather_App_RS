@@ -213,7 +213,7 @@ fn main() {
         let api_key: &str = "591ca4363aa734036342ecd0969b9466";
 
         let mut action_selection: String = String::new();
-        println!("Do you want to see the current weather, or the hourly weather forecast?");
+        println!("Do you want to see the current weather, or the hourly weather forecast? (1/2)");
         std::io::stdin().read_line(&mut action_selection).expect("Input failed");
 
         match action_selection.trim() {
