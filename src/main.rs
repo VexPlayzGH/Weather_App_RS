@@ -227,7 +227,7 @@ fn main() {
             "2" => {
                 match get_weather_forecast_info(&city, &country_code, api_key) {
                     Ok(response_fc) => display_weather_forecast_info(&response_fc),
-                    Err(err) => println!("Error: {:?}", err),
+                    Err(err) => println!("Error: {}", err),
                 }
             },
             _ => println!("Invalid input"),
