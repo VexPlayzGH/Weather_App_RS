@@ -187,10 +187,11 @@ fn get_temperature_emoji(temperature: f64, description_fc: &String) -> &'static 
     else if description_fc.as_str() == "thunderstorm" {
         "⛈️"
     }
+    else if description_fc.as_str() == "snow" {
+        "❄️"
+    }
     else {
-        if temperature < 0.0 {
-            "❄️"
-        } else if temperature < 10.0 {
+        if temperature < 10.0 {
             "☁️"
         } else if temperature < 20.0 {
             "⛅"
