@@ -46,6 +46,9 @@ struct WeatherForecast {
 #[derive(Deserialize, Debug)]
 struct Main {
     temp: f64,
+    feels_like: f64,
+    temp_min: f64,
+    temp_max: f64,
     humidity: f64,
     pressure: f64,
 }
@@ -53,6 +56,7 @@ struct Main {
 #[derive(Deserialize, Debug)]
 struct MainForecast {
     temp: f64,
+    feels_like: f64,    
     humidity: f64,
     pressure: f64,
 }
@@ -88,6 +92,9 @@ fn display_weather_info(response: &WeatherResponse) {
     // Extracting weather information from the response
     let description = &response.weather[0].description;
     let temperature = response.main.temp;
+    let feels_like = response.main.feels_like;
+    let temp_min = response.main.temp_min;
+    let temp_max = response.main.temp_max;
     let humidity = response.main.humidity;
     let pressure = response.main.pressure;
     let wind_speed = response.wind.speed;
@@ -95,7 +102,10 @@ fn display_weather_info(response: &WeatherResponse) {
     // Formatting weather information into a string
     let weather_text = format!(
         "Weather in {}: {} {}
-        > Temperature: {:.1}°C, 
+        > Temperature: {:.1}°C,
+        > Feels like: {:.1}°C,
+        > Today's maximum temperature: {:.1}°C,
+        > Today's minimum temperature: {:.1}°C, 
         > Humidity: {:.1}%, 
         > Pressure: {:.1} hPa, 
         > Wind Speed: {:.1} mps",
@@ -103,6 +113,9 @@ fn display_weather_info(response: &WeatherResponse) {
         description,
         get_temperature_emoji(temperature, description),
         temperature,
+        feels_like,
+        temp_max,
+        temp_min,
         humidity,
         pressure,
         wind_speed,
@@ -143,6 +156,7 @@ fn display_weather_forecast_info(list: &List) {
         let name = &list.city.name;
         let description_fc = &list.list[i].weather[0].description;
         let temperature_fc = list.list[i].main.temp - 273.15;
+        let feels_like_fc = list.list[i].main.feels_like - 273.15;
         let humidity_fc = list.list[i].main.humidity;
         let pressure_fc = list.list[i].main.pressure;
         let wind_speed_fc = list.list[i].wind.speed;       
@@ -150,7 +164,8 @@ fn display_weather_forecast_info(list: &List) {
         let weather_text_fc = format!(
             "-- {:?} --
             Weather in {}: {} {}
-            > Temperature: {:.1}°C, 
+            > Temperature: {:.1}°C,
+            > Feels like: {:.1}°C, 
             > Humidity: {:.1}%, 
             > Pressure: {:.1} hPa, 
             > Wind Speed: {:.1} mps\n",
@@ -159,6 +174,7 @@ fn display_weather_forecast_info(list: &List) {
             description_fc,
             get_temperature_emoji(temperature_fc, description_fc),
             temperature_fc,
+            feels_like_fc,
             humidity_fc,
             pressure_fc,
             wind_speed_fc,
@@ -230,13 +246,13 @@ fn main() {
                 // Calling the function to fetch weather information
                 match get_weather_info(&city, &country_code, api_key) {
                     Ok(response) => display_weather_info(&response),
-                    Err(err) => println!("Error: {}", err),
+                    Err(err) => eprintln!("Error: {}", err),
                 }
             },
             "2" => {
                 match get_weather_forecast_info(&city, &country_code, api_key) {
                     Ok(response_fc) => display_weather_forecast_info(&response_fc),
-                    Err(err) => println!("Error: {}", err),
+                    Err(err) => eprintln!("Error: {}", err),
                 }
             },
             _ => println!("Invalid input"),
