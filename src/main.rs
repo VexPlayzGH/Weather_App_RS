@@ -126,7 +126,7 @@ fn display_weather_info(response: &WeatherResponse) {
         "clear sky" => weather_text.bright_yellow(),
         "few clouds" | "scattered clouds" | "broken clouds" => weather_text.bright_blue(),
         "overcast clouds" | "mist" | "haze" | "smoke" | "sand" | "dust" | "fog" | "squalls" => weather_text.dimmed(),
-        "shower rain" | "rain" | "light rain" | "moderate rain" | "thunderstorm" | "snow" | "light snow" => weather_text.bright_cyan(),
+        "shower rain" | "rain" | "light rain" | "moderate rain" | "heavy intensity rain" | "thunderstorm" | "snow" | "light snow" => weather_text.bright_cyan(),
         _ => weather_text.normal(),
     };
 
@@ -185,7 +185,7 @@ fn display_weather_forecast_info(list: &List) {
             "clear sky" => weather_text_fc.bright_yellow(),
             "few clouds" | "scattered clouds" | "broken clouds" => weather_text_fc.bright_blue(),
             "overcast clouds" | "mist" | "haze" | "smoke" | "sand" | "dust" | "fog" | "squalls" => weather_text_fc.dimmed(),
-            "shower rain" | "rain" | "light rain" | "moderate rain" | "thunderstorm" | "snow" | "light snow" => weather_text_fc.bright_cyan(),
+            "shower rain" | "rain" | "light rain" | "moderate rain" | "heavy intensity rain" | "thunderstorm" | "snow" | "light snow" => weather_text_fc.bright_cyan(),
             _ => weather_text_fc.normal(),
         };
 
@@ -197,7 +197,7 @@ fn display_weather_forecast_info(list: &List) {
 
 // Function to get emoji based on temperature
 fn get_temperature_emoji(temperature: f64, description_fc: &String) -> &'static str {
-    if description_fc.as_str() == "shower rain" || description_fc.as_str() == "rain" || description_fc.as_str() == "light rain" || description_fc.as_str() == "moderate rain"{
+    if description_fc.as_str() == "shower rain" || description_fc.as_str() == "rain" || description_fc.as_str() == "light rain" || description_fc.as_str() == "moderate rain" || description_fc.as_str() == "heavy intensity rain" {
         "🌧️"
     }
     else if description_fc.as_str() == "thunderstorm" {
