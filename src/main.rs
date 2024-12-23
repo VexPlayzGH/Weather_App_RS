@@ -12,6 +12,17 @@ struct WeatherResponse {
 }
 
 #[derive(Deserialize, Debug)]
+struct AirResponse {
+    data: AirData,
+}
+
+#[derive(Deserialize, Debug)]
+struct AirData {
+    city: AirCity,
+    iaqi: IAqi,
+}
+
+#[derive(Deserialize, Debug)]
 struct List {
     list: Vec<WeatherForecastResponse>,
     city: City,
@@ -20,6 +31,30 @@ struct List {
 #[derive(Deserialize, Debug)]
 struct City {
     name: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct AirCity {
+    name: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct IAqi {
+    co: Val,
+    h: Val,
+    no2: Val,
+    o3: Val,
+    p: Val,
+    pm10: Val,
+    pm25: Val,
+    so2: Val,
+    t: Val,
+    w: Val,
+}
+
+#[derive(Deserialize, Debug)]
+struct Val {
+    v: f64,
 }
 
 #[derive(Deserialize, Debug)]
@@ -221,6 +256,62 @@ fn get_temperature_emoji(temperature: f64, description_fc: &String) -> &'static 
     }    
 }
 
+fn get_air_info(city: &str, api_key_air: &str) -> Result<AirResponse, reqwest::Error> {
+    // Constructing the URL for API request
+    let url_air = format!(
+        "https://api.waqi.info/feed/{}/?token={}",
+        city, api_key_air
+    );
+
+    // Sending a blocking GET request to the API endpoint
+    let response_air = reqwest::blocking::get(&url_air)?;
+    // Parsing the JSON response into WeatherResponse struct
+    let response_air_json = response_air.json::<AirResponse>()?;
+    Ok(response_air_json) // Returning the deserialized response
+}
+
+fn display_air_info(response_air: &AirResponse) {
+    // Extracting air pollution information from the response
+    let name = &response_air.data.city.name;
+    let co = response_air.data.iaqi.co.v;
+    let h = response_air.data.iaqi.h.v;
+    let no2 = response_air.data.iaqi.no2.v;
+    let o3 = response_air.data.iaqi.o3.v;
+    let p = response_air.data.iaqi.p.v;
+    let pm10 = response_air.data.iaqi.pm10.v;
+    let pm25 = response_air.data.iaqi.pm25.v;
+    let so2 = response_air.data.iaqi.so2.v;
+    let t = response_air.data.iaqi.t.v;
+    let w = response_air.data.iaqi.w.v;
+
+    let air_text = format!(
+        "Air Pollution in {}:
+        > CO₂: {:.1}μg/m³,
+        > H₂: {:.1}μg/m³,
+        > NO₂: {:.1}μg/m³,
+        > O₃: {:.1}μg/m³,
+        > P₄: {:.1}μg/m³,
+        > PM1: {:.1}µm,
+        > PM2.5: {:.1}µm,
+        > SO₂: {:.1}μg/m³,
+        > T: {:.1}°K,
+        > W: {:.1}μg/m³,",
+        name,
+        co,
+        h,
+        no2,
+        o3,
+        p,
+        pm10,
+        pm25,
+        so2,
+        t,
+        w,
+    );
+    let air_text_colored = air_text.bright_yellow();
+    // Printing the colored air pollution information
+    println!("{}", air_text_colored);
+}
 fn main() {    
     println!("{}", "Welcome to Weather Station!".bright_yellow());
     loop {
@@ -234,11 +325,12 @@ fn main() {
         std::io::stdin().read_line(&mut country_code).expect("Input failed");
         let country_code: &str = country_code.trim();
 
-        // Get API key
+        // Get API keys
         let api_key: &str = "591ca4363aa734036342ecd0969b9466";
+        let api_key_air: &str = "2a39e0b3437b635b380c94272b99ff5dd00d2b5d";
 
         let mut action_selection: String = String::new();
-        println!("Do you want to see the current weather, or the 3-hour weather forecast? (1/2)");
+        println!("Do you want to see the current weather, the 3-hour weather forecast,\nor the air pollution levels? (1/2/3)");
         std::io::stdin().read_line(&mut action_selection).expect("Input failed");
 
         match action_selection.trim() {
@@ -252,6 +344,12 @@ fn main() {
             "2" => {
                 match get_weather_forecast_info(&city, &country_code, api_key) {
                     Ok(response_fc) => display_weather_forecast_info(&response_fc),
+                    Err(err) => eprintln!("Error: {}", err),
+                }
+            },
+            "3" => {
+                match get_air_info(&city, api_key_air) {
+                    Ok(response_air) => display_air_info(&response_air),
                     Err(err) => eprintln!("Error: {}", err),
                 }
             },
