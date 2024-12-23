@@ -1,4 +1,4 @@
-use serde::Deserialize; // For JSON serialization
+use serde::Deserialize; // For JSON deserialization
 use colored::*; // Importing colored crate for text coloring
 use std::process::Command;
 
@@ -137,10 +137,10 @@ fn display_weather_info(response: &WeatherResponse) {
     // Formatting weather information into a string
     let weather_text = format!(
         "Weather in {}: {} {}
-        > Temperature: {:.1}°C,
-        > Feels like: {:.1}°C,
-        > Today's maximum temperature: {:.1}°C,
-        > Today's minimum temperature: {:.1}°C, 
+        > Temperature: {:.1}°C ({:.1}°F),
+        > Feels like: {:.1}°C ({:.1}°F),
+        > Today's maximum temperature: {:.1}°C ({:.1}°F),
+        > Today's minimum temperature: {:.1}°C ({:.1}°F), 
         > Humidity: {:.1}%, 
         > Pressure: {:.1} hPa, 
         > Wind Speed: {:.1} mps",
@@ -148,9 +148,13 @@ fn display_weather_info(response: &WeatherResponse) {
         description,
         get_temperature_emoji(temperature, description),
         temperature,
+        temperature * 1.8 + 32.0,
         feels_like,
+        feels_like * 1.8 + 32.0,
         temp_max,
+        temp_max * 1.8 + 32.0,
         temp_min,
+        temp_min * 1.8 + 32.0,
         humidity,
         pressure,
         wind_speed,
@@ -199,8 +203,8 @@ fn display_weather_forecast_info(list: &List) {
         let weather_text_fc = format!(
             "-- {:?} --
             Weather in {}: {} {}
-            > Temperature: {:.1}°C,
-            > Feels like: {:.1}°C, 
+            > Temperature: {:.1}°C ({:.1}°F),
+            > Feels like: {:.1}°C ({:.1}°F), 
             > Humidity: {:.1}%, 
             > Pressure: {:.1} hPa, 
             > Wind Speed: {:.1} mps\n",
@@ -209,7 +213,9 @@ fn display_weather_forecast_info(list: &List) {
             description_fc,
             get_temperature_emoji(temperature_fc, description_fc),
             temperature_fc,
+            temperature_fc * 1.8 + 32.0,
             feels_like_fc,
+            feels_like_fc * 1.8 + 32.0,
             humidity_fc,
             pressure_fc,
             wind_speed_fc,
@@ -327,15 +333,15 @@ fn display_air_info(response_air: &AirResponse) {
     let air_text = format!(
         "DISCLAIMER: if a level is equal to 0.0, that means the data is not available.
         Air Pollution in {}:
-        > CO₂: {:.1?}μg/m³,
+        > CO₂: {:.1}μg/m³,
         > H₂: {:.1}μg/m³,
         > NO₂: {:.1}μg/m³,
-        > O₃: {:.1?}μg/m³,
+        > O₃: {:.1}μg/m³,
         > P₄: {:.1}μg/m³,
         > PM1: {:.1}µm,
         > PM2.5: {:.1}µm,
         > SO₂: {:.1}μg/m³,
-        > T: {:.1}°K,
+        > T: {:.1}°K ({:.1}°C / {:.1}°F),
         > W: {:.1}μg/m³,",
         name,
         co,
@@ -347,6 +353,8 @@ fn display_air_info(response_air: &AirResponse) {
         pm25,
         so2,
         t + 273.15,
+        t,
+        t * 1.8 + 32.0,
         w,
     );
     let air_text_colored = air_text.bright_yellow();
