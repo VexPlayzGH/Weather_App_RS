@@ -346,7 +346,7 @@ fn display_air_info(response_air: &AirResponse) {
         pm10,
         pm25,
         so2,
-        t,
+        t + 273.15,
         w,
     );
     let air_text_colored = air_text.bright_yellow();
@@ -391,7 +391,7 @@ fn main() {
             "3" => {
                 match get_air_info(&city, api_key_air) {
                     Ok(response_air) => display_air_info(&response_air),
-                    Err(err) => println!("Error: {:#?}", err),
+                    Err(err) => eprintln!("Error: {}", err),
                 }
             },
             _ => println!("Invalid input"),
