@@ -40,16 +40,16 @@ struct AirCity {
 
 #[derive(Deserialize, Debug)]
 struct IAqi {
-    co: Val,
-    h: Val,
-    no2: Val,
-    o3: Val,
-    p: Val,
-    pm10: Val,
-    pm25: Val,
-    so2: Val,
-    t: Val,
-    w: Val,
+    co: Option<Val>,
+    h: Option<Val>,
+    no2: Option<Val>,
+    o3: Option<Val>,
+    p: Option<Val>,
+    pm10: Option<Val>,
+    pm25: Option<Val>,
+    so2: Option<Val>,
+    t: Option<Val>,
+    w: Option<Val>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -260,7 +260,7 @@ fn get_air_info(city: &str, api_key_air: &str) -> Result<AirResponse, reqwest::E
     // Constructing the URL for API request
     let url_air = format!(
         "https://api.waqi.info/feed/{}/?token={}",
-        city, api_key_air
+        city.to_lowercase(), api_key_air
     );
 
     // Sending a blocking GET request to the API endpoint
@@ -271,25 +271,66 @@ fn get_air_info(city: &str, api_key_air: &str) -> Result<AirResponse, reqwest::E
 }
 
 fn display_air_info(response_air: &AirResponse) {
+    let co: f64;
+    let h: f64;
+    let no2: f64;
+    let o3: f64;
+    let p: f64;
+    let pm10: f64;
+    let pm25: f64;
+    let so2: f64;
+    let t: f64;
+    let w: f64;
     // Extracting air pollution information from the response
     let name = &response_air.data.city.name;
-    let co = response_air.data.iaqi.co.v;
-    let h = response_air.data.iaqi.h.v;
-    let no2 = response_air.data.iaqi.no2.v;
-    let o3 = response_air.data.iaqi.o3.v;
-    let p = response_air.data.iaqi.p.v;
-    let pm10 = response_air.data.iaqi.pm10.v;
-    let pm25 = response_air.data.iaqi.pm25.v;
-    let so2 = response_air.data.iaqi.so2.v;
-    let t = response_air.data.iaqi.t.v;
-    let w = response_air.data.iaqi.w.v;
+    match &response_air.data.iaqi.co {
+        Some(_v) => co = response_air.data.iaqi.co.as_ref().unwrap().v,
+        None => co = 0.0,
+    }
+    match &response_air.data.iaqi.h {
+        Some(_v) => h = response_air.data.iaqi.h.as_ref().unwrap().v,
+        None => h = 0.0,
+    }
+    match &response_air.data.iaqi.no2 {
+        Some(_v) => no2 = response_air.data.iaqi.no2.as_ref().unwrap().v,
+        None => no2 = 0.0,
+    }
+    match &response_air.data.iaqi.o3 {
+        Some(_v) => o3 = response_air.data.iaqi.o3.as_ref().unwrap().v,
+        None => o3 = 0.0,
+    }
+    match &response_air.data.iaqi.p {
+        Some(_v) => p = response_air.data.iaqi.p.as_ref().unwrap().v,
+        None => p = 0.0,
+    }
+    match &response_air.data.iaqi.pm10 {
+        Some(_v) => pm10 = response_air.data.iaqi.pm10.as_ref().unwrap().v,
+        None => pm10 = 0.0,
+    }
+    match &response_air.data.iaqi.pm25 {
+        Some(_v) => pm25 = response_air.data.iaqi.pm25.as_ref().unwrap().v,
+        None => pm25 = 0.0,
+    }
+    match &response_air.data.iaqi.so2 {
+        Some(_v) => so2 = response_air.data.iaqi.so2.as_ref().unwrap().v,
+        None => so2 = 0.0,
+    }
+    match &response_air.data.iaqi.t {
+        Some(_v) => t = response_air.data.iaqi.t.as_ref().unwrap().v,
+        None => t = 0.0,
+    }
+    match &response_air.data.iaqi.w {
+        Some(_v) => w = response_air.data.iaqi.w.as_ref().unwrap().v,
+        None => w = 0.0,
+    }
 
     let air_text = format!(
-        "Air Pollution in {}:
-        > CO₂: {:.1}μg/m³,
+        "DISCLAIMER: if a level is equal to 0.0, that means the data is not available.
+        Air Pollution in {}:
+        > CO₂: {:.1?}μg/m³,
         > H₂: {:.1}μg/m³,
         > NO₂: {:.1}μg/m³,
-        > O₃: {:.1}μg/m³,
+        > O₃: {:.1?}μg/m³,
         > P₄: {:.1}μg/m³,
         > PM1: {:.1}µm,
         > PM2.5: {:.1}µm,
@@ -350,7 +391,7 @@ fn main() {
             "3" => {
                 match get_air_info(&city, api_key_air) {
                     Ok(response_air) => display_air_info(&response_air),
-                    Err(err) => eprintln!("Error: {}", err),
+                    Err(err) => println!("Error: {:#?}", err),
                 }
             },
             _ => println!("Invalid input"),
