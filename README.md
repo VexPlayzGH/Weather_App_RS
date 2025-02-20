@@ -6,4 +6,6 @@ Once downloaded, run it on your device.
 You will be given a prompt to enter the city name and then the 2-digit country code (e.g. US for United States, PL for Poland, GB for Great Britain).
 Once done, type 1 (current weather), 2 (weather forecast) or 3 (air pollution levels) and press enter to get the results!
 
+P.S.: For the optimal CLUI experience, please install Powershell 7 from here: https://apps.microsoft.com/detail/9mz1snwt0n5d?hl=en-US&gl=US
+
 Have fun!
